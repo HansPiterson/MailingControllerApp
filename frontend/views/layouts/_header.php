@@ -7,11 +7,18 @@ declare(strict_types=1);
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 $items = [
     [
         'label' => 'Home',
         'url' => ['/site/index'],
+    ],
+    // Tambahkan item menu baru di sini
+    [
+        'label' => 'Daftar Surat',
+        'url' => ['/surat/index'],
+        'visible' => !Yii::$app->user->isGuest, // Hanya tampil jika sudah login
     ],
     [
         'label' => 'About',
@@ -31,16 +38,18 @@ $items = [
         'url' => ['/site/login'],
         'visible' => Yii::$app->user->isGuest,
     ],
-    [
+];
+
+if (!Yii::$app->user->isGuest) {
+    $items[] = [
         'label' => 'Logout (' . Html::encode(Yii::$app->user->identity?->username) . ')',
         'url' => ['/site/logout'],
         'linkOptions' => [
             'data-method' => 'post',
             'class' => 'logout',
         ],
-        'visible' => !Yii::$app->user->isGuest,
-    ],
-];
+    ];
+}
 
 ?>
 <header id="header">

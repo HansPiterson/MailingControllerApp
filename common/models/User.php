@@ -9,6 +9,8 @@ use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 /**
  * User model
@@ -70,9 +72,14 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public static function findIdentityByAccessToken($token, $type = null): never
+    public static function findIdentityByAccessToken($token, $type = null)
     {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        try {
+            $decoded = JWT::decode($token, new Key(Yii::$app->params['jwtSecret'], 'HS256'));
+            return static::findOne($decoded->sub);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**

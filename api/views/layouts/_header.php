@@ -13,30 +13,31 @@ $items = [
         'label' => 'Home',
         'url' => ['/site/index'],
     ],
-    // Tambahkan item menu baru di sini
     [
-        'label' => 'Kelola Divisi',
-        'url' => ['/divisi/index'],
-        'visible' => !Yii::$app->user->isGuest, // Hanya tampil jika sudah login
+        'label' => 'Surat Ekspedisi',
+        'url' => ['/surat-ekspedisi/index'],
+        'visible' => !Yii::$app->user->isGuest,
     ],
-];
-
-if (Yii::$app->user->isGuest) {
-    $items[] = [
+    [
+        'label' => 'Divisi',
+        'url' => ['/divisi/index'],
+        'visible' => !Yii::$app->user->isGuest,
+    ],
+    [
         'label' => 'Login',
         'url' => ['/site/login'],
-    ];
-} else {
-    $items[] = [
+        'visible' => Yii::$app->user->isGuest,
+    ],
+    [
         'label' => 'Logout (' . Html::encode(Yii::$app->user->identity?->username) . ')',
         'url' => ['/site/logout'],
         'linkOptions' => [
             'data-method' => 'post',
             'class' => 'logout',
         ],
-    ];
-}
-
+        'visible' => !Yii::$app->user->isGuest,
+    ],
+];
 ?>
 <header id="header">
     <?php NavBar::begin(
