@@ -1,12 +1,9 @@
 <?php
-
-declare(strict_types=1);
-
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
     require __DIR__ . '/params.php',
-    require __DIR__ . '/params-local.php',
+    require __DIR__ . '/params-local.php'
 );
 
 return [
@@ -20,7 +17,7 @@ return [
     ],
     'controllerMap' => [
         'fixture' => [
-            'class' => \yii\console\controllers\FixtureController::class,
+            'class' => 'yii\console\controllers\FixtureController',
             'namespace' => 'common\fixtures',
           ],
     ],
@@ -28,10 +25,14 @@ return [
         'log' => [
             'targets' => [
                 [
-                    'class' => \yii\log\FileTarget::class,
+                    'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
             ],
+        ],
+        // Tambahkan authManager di sini
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
         ],
     ],
     'params' => $params,
