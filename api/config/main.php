@@ -14,7 +14,8 @@ return [
                 'POST api/auth/refresh' => 'auth/refresh',
                 'POST api/surat/<uuid>/upload-bukti' => 'foto/upload-bukti',
                 'POST api/sync/download' => 'sync/download',
-                'GET api/divisi' => 'divisi/index', // Rute baru untuk daftar divisi
+                'POST api/sync/upload' => 'sync/upload', // Tambahkan ini
+                'GET api/divisi' => 'divisi/index',
                 [
                     'class' => 'yii\rest\UrlRule', 
                     'controller' => 'surat',
