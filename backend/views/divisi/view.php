@@ -1,34 +1,42 @@
 <?php
+
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-/** @var yii\web\View $this */
-/** @var common\models\Divisi $model */
-$this->title = $model->nama_divisi;
-$this->params['breadcrumbs'][] = ['label' => 'Divisi', 'url' => ['index']];
+
+$this->title = "Detail Divisi: " . $model->nama;
+$this->params['breadcrumbs'][] = ['label' => 'Manajemen Divisi', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="divisi-view">
-    <h1><?= Html::encode($this->title) ?></h1>
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'kode_divisi',
-            'nama_divisi',
-            'is_active:boolean',
-            'created_at:datetime',
-            'updated_at:datetime',
-        ],
-    ]) ?>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><?= Html::encode($this->title) ?></h1>
+        <div>
+            <?= Html::a('<i class="fas fa-pencil-alt"></i> Ubah', ['update', 'id' => $model->id], ['class' => 'btn btn-primary'])
+            ?>
+            <?= Html::a('<i class="fas fa-trash"></i> Hapus', ['delete', 'id' => $model->id], [
+                'class' => 'btn btn-danger',
+                'data' => [
+                    'confirm' => "Apakah Anda yakin ingin menghapus divisi '{$model->nama}'?",
+                    'method' => 'post',
+                ],
+            ]) ?>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <?= DetailView::widget([
+                'model' => $model,
+                'attributes' => [
+                    'id',
+                    'nama',
+                    'created_at:datetime',
+                    'updated_at:datetime',
+                ],
+            ]) ?>
+        </div>
+    </div>
+
 </div>

@@ -1,64 +1,62 @@
 <?php
-use common\models\Divisi;
+
 use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use yii\widgets\Pjax;
 
-/** @var yii\web\View $this */
-/** @var backend\models\DivisiSearch $searchModel */
-/** @var yii\data\ActiveDataProvider $dataProvider */
-
-$this->title = 'Kelola Divisi';
+$this->title = 'Manajemen Divisi';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="divisi-index">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1><?= Html::encode($this->title) ?></h1>
-        <p>
-            <?= Html::a('<hero-icon name="plus" class="w-5 h-5 me-1"></hero-icon> Tambah Divisi', ['create'], ['class' => 'btn btn-success d-flex align-items-center']) ?>
-        </p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><?= Html::encode($this->title) ?></h1>
+        <?= Html::a('<i class="fas fa-plus fa-sm text-white-50"></i> Tambah Divisi', ['create'], ['class' => 'd-none d-sm-inline-block btn btn-sm btn-primary shadow-sm']) ?>
     </div>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'tableOptions' => ['class' => 'table table-hover'],
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-            'kode_divisi',
-            'nama_divisi',
-            [
-                'attribute' => 'is_active',
-                'format' => 'raw',
-                'value' => function ($model) {
-                    return $model->is_active 
-                        ? '<span class="badge bg-success">Active</span>' 
-                        : '<span class="badge bg-danger">Inactive</span>';
-                }
-            ],
-            [
-                'class' => ActionColumn::className(),
-                'header' => 'Actions',
-                'template' => '{view} {update} {delete}',
-                'buttons' => [
-                    'view' => function ($url, $model, $key) {
-                        return Html::a('<hero-icon name="eye" class="w-5 h-5"></hero-icon>', $url, ['class' => 'text-primary', 'title' => 'View']);
-                    },
-                    'update' => function ($url, $model, $key) {
-                        return Html::a('<hero-icon name="pencil-square" class="w-5 h-5"></hero-icon>', $url, ['class' => 'text-warning ms-2', 'title' => 'Update']);
-                    },
-                    'delete' => function ($url, $model, $key) {
-                        return Html::a('<hero-icon name="trash" class="w-5 h-5"></hero-icon>', $url, [
-                            'class' => 'text-danger ms-2',
-                            'title' => 'Delete',
-                            'data-confirm' => 'Are you sure you want to delete this item?',
-                            'data-method' => 'post',
-                        ]);
-                    },
-                ],
-            ],
-        ],
-    ]); ?>
+    <?php Pjax::begin(); ?>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <?= GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'filterModel' => $searchModel,
+                    'summary' => "Menampilkan {begin}-{end} dari {totalCount} data",
+                    'tableOptions' => ['class' => 'table table-bordered table-hover'],
+                    'headerRowOptions' => ['class' => 'text-primary'],
+                    'columns' => [
+                        ['class' => 'yii\grid\SerialColumn'],
+                        'nama',
+                        [
+                            'attribute' => 'created_at',
+                            'format' => 'datetime',
+                            'filter' => false, // Nonaktifkan filter untuk kolom ini
+                        ],
+                        [
+                            'class' => 'yii\grid\ActionColumn',
+                            'template' => '<div class="d-flex">{view} {update} {delete}</div>',
+                            'buttons' => [
+                                'view' => function ($url, $model, $key) {
+                                    return Html::a('<i class="fas fa-eye"></i>', $url, ['class' => 'btn btn-sm btn-info', 'title' => 'Lihat']);
+                                },
+                                'update' => function ($url, $model, $key) {
+                                    return Html::a('<i class="fas fa-pencil-alt"></i>', $url, ['class' => 'btn btn-sm btn-warning mx-1', 'title' => 'Ubah']);
+                                },
+                                'delete' => function ($url, $model, $key) {
+                                    return Html::a('<i class="fas fa-trash"></i>', $url, [
+                                        'class' => 'btn btn-sm btn-danger', 
+                                        'title' => 'Hapus',
+                                        'data-confirm' => "Apakah Anda yakin ingin menghapus divisi '{$model->nama}'?",
+                                        'data-method' => 'post',
+                                    ]);
+                                },
+                            ],
+                        ],
+                    ],
+                ]); ?>
+            </div>
+        </div>
+    </div>
+    <?php Pjax::end(); ?>
+
 </div>

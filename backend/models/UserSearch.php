@@ -11,17 +11,18 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'verification_token'], 'safe'],
+            [['id', 'status', 'created_at', 'updated_at', 'divisi_id'], 'integer'],
+            [['username', 'email', 'role', 'nama_lengkap'], 'safe'],
         ];
     }
 
     public function search($params)
     {
-        $query = User::find();
+        $query = User::find()->with('divisi');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -33,10 +34,13 @@ class UserSearch extends User
         $query->andFilterWhere([
             'id' => $this->id,
             'status' => $this->status,
+            'divisi_id' => $this->divisi_id,
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'email', $this->email]);
+            ->andFilterWhere(['like', 'email', $this->email])
+            ->andFilterWhere(['like', 'role', $this->role])
+            ->andFilterWhere(['like', 'nama_lengkap', $this->nama_lengkap]);
 
         return $dataProvider;
     }

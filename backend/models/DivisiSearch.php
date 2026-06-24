@@ -12,7 +12,7 @@ class DivisiSearch extends Divisi
     {
         return [
             [['id'], 'integer'],
-            [['kode_divisi', 'nama_divisi'], 'safe'],
+            [['nama', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -22,6 +22,8 @@ class DivisiSearch extends Divisi
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
+            'pagination' => ['pageSize' => 10]
         ]);
 
         $this->load($params);
@@ -30,8 +32,11 @@ class DivisiSearch extends Divisi
             return $dataProvider;
         }
 
-        $query->andFilterWhere(['like', 'kode_divisi', $this->kode_divisi])
-              ->andFilterWhere(['like', 'nama_divisi', $this->nama_divisi]);
+        $query->andFilterWhere([
+            'id' => $this->id,
+        ]);
+
+        $query->andFilterWhere(['like', 'nama', $this->nama]);
 
         return $dataProvider;
     }
