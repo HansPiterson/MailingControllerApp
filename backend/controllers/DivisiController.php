@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use Yii;
 
 class DivisiController extends Controller
 {
@@ -19,8 +20,7 @@ class DivisiController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['@'], // Hanya untuk user yang sudah login
-                        // Nanti kita bisa perketat hanya untuk role 'admin'
+                        'roles' => ['@'],
                     ],
                 ],
             ],
@@ -56,6 +56,7 @@ class DivisiController extends Controller
         $model = new Divisi();
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', "Divisi '{$model->nama_divisi}' berhasil dibuat.");
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -69,6 +70,7 @@ class DivisiController extends Controller
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', "Divisi '{$model->nama_divisi}' berhasil diperbarui.");
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -79,8 +81,11 @@ class DivisiController extends Controller
 
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $model = $this->findModel($id);
+        $namaDivisi = $model->nama_divisi;
+        $model->delete();
+        
+        Yii::$app->session->setFlash('success', "Divisi '{$namaDivisi}' telah dihapus.");
         return $this->redirect(['index']);
     }
 

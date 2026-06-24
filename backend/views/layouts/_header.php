@@ -23,7 +23,6 @@ $items = [
         'url' => ['/user/index'],
         'visible' => !Yii::$app->user->isGuest,
     ],
-    // Tambahkan item menu baru di sini
     [
         'label' => 'Kelola Surat',
         'url' => ['/surat-ekspedisi/index'],
@@ -53,7 +52,8 @@ if (Yii::$app->user->isGuest) {
         [
             'brandLabel' => Yii::$app->name,
             'brandUrl' => Yii::$app->homeUrl,
-            'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
+            // Mengubah kelas untuk tampilan yang lebih bersih
+            'options' => ['class' => 'navbar-expand-md navbar-light bg-white shadow-sm fixed-top']
         ],
     ) ?>
     <?= Nav::widget(
@@ -61,14 +61,6 @@ if (Yii::$app->user->isGuest) {
             'options' => ['class' => 'navbar-nav me-auto'],
             'encodeLabels' => false,
             'items' => $items,
-        ],
-    ) ?>
-    <?= Html::button(
-        '&#127769;',
-        [
-            'id' => 'theme-toggle',
-            'class' => 'btn btn-link nav-link fs-5',
-            'aria-label' => 'Switch to dark mode',
         ],
     ) ?>
     <?php NavBar::end() ?>

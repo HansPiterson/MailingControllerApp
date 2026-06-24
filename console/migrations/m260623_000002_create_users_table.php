@@ -21,9 +21,9 @@ class m260623_000002_create_users_table extends Migration
             'password_hash' => $this->string(255)->notNull(),
             'nama_lengkap' => $this->string(100)->notNull(),
             'role' => $this->string(20)->defaultValue('divisi'),
-            'is_active' => $this->boolean()->notNull()->defaultValue(true),
-            'created_at' => $this->dateTime(),
-            'updated_at' => $this->dateTime(),
+            'status' => $this->smallInteger()->notNull()->defaultValue(10),
+            'created_at' => $this->integer()->notNull(),
+            'updated_at' => $this->integer()->notNull(),
         ]);
 
         $this->createIndex('idx-users-username', '{{%users}}', 'username', true);

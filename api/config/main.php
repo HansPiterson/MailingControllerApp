@@ -47,6 +47,10 @@ return [
             'rules' => [
                 '/' => 'site/index',
                 'POST api/auth/login' => 'auth/login',
+                
+                // Aturan untuk upload foto
+                'POST api/surat/<uuid>/upload-bukti' => 'foto/upload-bukti',
+
                 [
                     'class' => 'yii\rest\UrlRule', 
                     'controller' => 'surat',

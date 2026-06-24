@@ -25,14 +25,15 @@ class m260623_000007_seed_admin_user extends Migration
         $user = new User();
         $user->username = 'admin';
         $user->email = 'admin@example.com';
-        $user->setPassword('admin123'); // Password di-hash secara otomatis
+        $user->nama_lengkap = 'Administrator'; // Tambahkan ini
+        $user->setPassword('admin123');
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
         $user->status = User::STATUS_ACTIVE;
-        $user->divisi_id = $divisi->id;
-        $user->role = 'admin'; 
         
-        // Simpan user tanpa validasi email, karena ini adalah seeder
+        $user->setAttribute('divisi_id', $divisi->id);
+        $user->setAttribute('role', 'admin');
+        
         if (!$user->save(false)) {
             throw new \Exception("Gagal menyimpan user admin: " . json_encode($user->errors));
         }
@@ -43,7 +44,11 @@ class m260623_000007_seed_admin_user extends Migration
      */
     public function safeDown()
     {
-        $this->delete('{{%user}}', ['username' => 'admin']);
+        $adminUser = User::findOne(['username' => 'admin']);
+        if ($adminUser) {
+            $this->delete('{{%user}}', ['id' => $adminUser->id]);
+        }
+        
         $this->delete('{{%divisi}}', ['kode_divisi' => 'PST']);
     }
 }

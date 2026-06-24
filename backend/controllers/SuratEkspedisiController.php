@@ -1,96 +1,41 @@
 <?php
-
-namespace backend\controllers;
-
-use common\models\SuratEkspedisi;
-use backend\models\SuratEkspedisiSearch;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
-
+// ... (namespace & use)
 class SuratEkspedisiController extends Controller
 {
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
+    // ... (behaviors)
 
-    public function actionIndex()
-    {
-        $searchModel = new SuratEkspedisiSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+    // ... (actionIndex, actionView)
 
     public function actionCreate()
     {
         $model = new SuratEkspedisi();
-        $model->created_by = \Yii::$app->user->id; // Set user yang membuat
-
+        $model->created_by = Yii::$app->user->id;
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', "Surat '{$model->nomor_surat}' berhasil dibuat.");
             return $this->redirect(['view', 'id' => $model->id]);
         }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $this->render('create', ['model' => $model]);
     }
 
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $model->updated_by = \Yii::$app->user->id; // Set user yang mengubah
-
+        $model->updated_by = Yii::$app->user->id;
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', "Surat '{$model->nomor_surat}' berhasil diperbarui.");
             return $this->redirect(['view', 'id' => $model->id]);
         }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        return $this->render('update', ['model' => $model]);
     }
 
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $model = $this->findModel($id);
+        $nomorSurat = $model->nomor_surat;
+        $model->delete();
+        Yii::$app->session->setFlash('success', "Surat '{$nomorSurat}' telah dihapus.");
         return $this->redirect(['index']);
     }
 
-    protected function findModel($id)
-    {
-        if (($model = SuratEkspedisi::findOne(['id' => $id])) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
+    // ... (review, lihatBukti, findModel)
 }
