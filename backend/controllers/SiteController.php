@@ -1,16 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
 namespace backend\controllers;
 
-use common\models\LoginForm;
-use Yii;
-use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
+use common\models\Divisi;
+use common\models\SuratEkspedisi;
+use common\models\User;
 use yii\web\Controller;
-use yii\web\ErrorAction;
-use yii\web\Response;
+use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use yii\data\ActiveDataProvider;
 
 /**
  * Site controller
@@ -20,7 +18,7 @@ class SiteController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function behaviors(): array
+    public function behaviors()
     {
         return [
             'access' => [
@@ -49,11 +47,11 @@ class SiteController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function actions(): array
+    public function actions()
     {
         return [
             'error' => [
-                'class' => ErrorAction::class,
+                'class' => \yii\web\ErrorAction::class,
             ],
         ];
     }
@@ -63,26 +61,40 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionIndex(): string
+    public function actionIndex()
     {
-        return $this->render('index');
+        $totalSurat = SuratEkspedisi::find()->count();
+        $totalDivisi = Divisi::find()->count();
+        $totalUser = User::find()->count();
+
+        $latestSuratProvider = new ActiveDataProvider([
+            'query' => SuratEkspedisi::find()->orderBy(['created_at' => SORT_DESC])->limit(5),
+            'pagination' => false,
+        ]);
+
+        return $this->render('index', [
+            'totalSurat' => $totalSurat,
+            'totalDivisi' => $totalDivisi,
+            'totalUser' => $totalUser,
+            'latestSuratProvider' => $latestSuratProvider,
+        ]);
     }
 
     /**
      * Login action.
      *
-     * @return string|Response
+     * @return string|yii\web\Response
      */
-    public function actionLogin(): string|Response
+    public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
+        if (!\Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
         $this->layout = 'blank';
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        $model = new \common\models\LoginForm();
+        if ($model->load(\Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }
 
@@ -96,11 +108,11 @@ class SiteController extends Controller
     /**
      * Logout action.
      *
-     * @return Response
+     * @return yii\web\Response
      */
-    public function actionLogout(): Response
+    public function actionLogout()
     {
-        Yii::$app->user->logout();
+        \Yii::$app->user->logout();
 
         return $this->goHome();
     }

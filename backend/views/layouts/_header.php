@@ -13,11 +13,21 @@ $items = [
         'label' => 'Home',
         'url' => ['/site/index'],
     ],
-    // Tambahkan item menu baru di sini
     [
         'label' => 'Kelola Divisi',
         'url' => ['/divisi/index'],
-        'visible' => !Yii::$app->user->isGuest, // Hanya tampil jika sudah login
+        'visible' => !Yii::$app->user->isGuest,
+    ],
+    [
+        'label' => 'Kelola Users',
+        'url' => ['/user/index'],
+        'visible' => !Yii::$app->user->isGuest,
+    ],
+    // Tambahkan item menu baru di sini
+    [
+        'label' => 'Kelola Surat',
+        'url' => ['/surat-ekspedisi/index'],
+        'visible' => !Yii::$app->user->isGuest,
     ],
 ];
 

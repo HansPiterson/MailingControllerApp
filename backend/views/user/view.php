@@ -1,16 +1,17 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\models\User;
 
 /** @var yii\web\View $this */
-/** @var common\models\SuratEkspedisi $model */
+/** @var common\models\User $model */
 
-$this->title = 'Detail Surat: ' . $model->nomor_surat;
-$this->params['breadcrumbs'][] = ['label' => 'Surat Ekspedisi', 'url' => ['index']];
+$this->title = $model->username;
+$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="surat-ekspedisi-view">
+<div class="user-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -28,20 +29,16 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'nomor_surat',
-            'tanggal_surat:date',
-            'perihal:ntext',
-            'divisiPengirim.nama_divisi',
-            'divisiTujuan.nama_divisi',
-            'nama_tujuan_orang',
-            'status',
-            'nama_penerima',
-            'tanggal_penerimaan:datetime',
-            // Di backend, kita mungkin ingin menampilkan link ke foto, bukan fotonya langsung
-            'foto_bukti',
-            'pembuat.username',
+            'id',
+            'username',
+            'email:email',
+            // 'divisi.nama_divisi', // Uncomment jika relasi 'divisi' sudah dibuat
+            'role',
+            [
+                'attribute' => 'status',
+                'value' => $model->status == User::STATUS_ACTIVE ? 'Active' : 'Inactive',
+            ],
             'created_at:datetime',
-            'pengubah.username',
             'updated_at:datetime',
         ],
     ]) ?>

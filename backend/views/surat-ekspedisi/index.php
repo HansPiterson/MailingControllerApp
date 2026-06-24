@@ -1,18 +1,18 @@
-
 <?php
-
 use common\models\SuratEkspedisi;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use common\models\Divisi;
+use yii\helpers\ArrayHelper;
 
 /** @var yii\web\View $this */
 /** @var backend\models\SuratEkspedisiSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = 'Surat Ekspedisi';
-$this->params[breadcrumbs][] = $this->title;
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="surat-ekspedisi-index">
 
@@ -22,29 +22,24 @@ $this->params[breadcrumbs][] = $this->title;
         <?= Html::a('Create Surat Ekspedisi', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'uuid',
             'nomor_surat',
-            'divisi_pengirim_id',
-            'divisi_tujuan_id',
-            //'nama_tujuan_orang',
-            //'tanggal_surat',
-            //'perihal',
-            //'nama_penerima',
-            //'tanggal_penerimaan',
-            //'foto_bukti',
-            //'foto_alamat',
-            //'foto_latitude',
-            //'foto_longitude',
-            //'foto_hash',
+            'perihal:ntext',
+            [
+                'attribute' => 'divisi_pengirim_id',
+                'value' => 'divisiPengirim.nama_divisi',
+                'filter' => ArrayHelper::map(Divisi::find()->asArray()->all(), 'id', 'nama_divisi'),
+            ],
+            [
+                'attribute' => 'divisi_tujuan_id',
+                'value' => 'divisiTujuan.nama_divisi',
+                'filter' => ArrayHelper::map(Divisi::find()->asArray()->all(), 'id', 'nama_divisi'),
+            ],
+            'tanggal_surat:date',
             'status',
             [
                 'class' => ActionColumn::className(),
@@ -54,6 +49,4 @@ $this->params[breadcrumbs][] = $this->title;
             ],
         ],
     ]); ?>
-
-
 </div>

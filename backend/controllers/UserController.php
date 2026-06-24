@@ -2,14 +2,14 @@
 
 namespace backend\controllers;
 
-use common\models\SuratEkspedisi;
-use backend\models\SuratEkspedisiSearch;
+use common\models\User;
+use backend\models\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 
-class SuratEkspedisiController extends Controller
+class UserController extends Controller
 {
     public function behaviors()
     {
@@ -34,7 +34,7 @@ class SuratEkspedisiController extends Controller
 
     public function actionIndex()
     {
-        $searchModel = new SuratEkspedisiSearch();
+        $searchModel = new UserSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -52,11 +52,19 @@ class SuratEkspedisiController extends Controller
 
     public function actionCreate()
     {
-        $model = new SuratEkspedisi();
-        $model->created_by = \Yii::$app->user->id; // Set user yang membuat
+        $model = new User();
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post())) {
+                $model->setPassword($model->password_hash);
+                $model->generateAuthKey();
+                $model->generateEmailVerificationToken();
+                if ($model->save()) {
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+            }
+        } else {
+            $model->loadDefaultValues();
         }
 
         return $this->render('create', [
@@ -67,10 +75,17 @@ class SuratEkspedisiController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $model->updated_by = \Yii::$app->user->id; // Set user yang mengubah
+        $oldPassword = $model->password_hash;
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            if (empty($model->password_hash)) {
+                $model->password_hash = $oldPassword;
+            } else {
+                $model->setPassword($model->password_hash);
+            }
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [
@@ -87,7 +102,7 @@ class SuratEkspedisiController extends Controller
 
     protected function findModel($id)
     {
-        if (($model = SuratEkspedisi::findOne(['id' => $id])) !== null) {
+        if (($model = User::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

@@ -2,13 +2,13 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var common\models\SuratEkspedisi $model */
+/** @var common\models\User $model */
 
-$this->title = 'Create Surat Ekspedisi';
-$this->params['breadcrumbs'][] = ['label' => 'Surat Ekspedisi', 'url' => ['index']];
+$this->title = 'Create User';
+$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="surat-ekspedisi-create">
+<div class="user-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
