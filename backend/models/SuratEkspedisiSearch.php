@@ -8,11 +8,22 @@ use common\models\SuratEkspedisi;
 
 class SuratEkspedisiSearch extends SuratEkspedisi
 {
-    public function rules()
+    /**
+     * Menegaskan penggunaan tabel yang sama dengan model induknya.
+     */
+    public static function tableName(): string
+    {
+        return '{{%surat_ekspedisi}}';
+    }
+
+    /**
+     * Menambahkan Type Hinting ': array' agar kompatibel dengan model induk.
+     */
+    public function rules(): array
     {
         return [
             [['id', 'divisi_pengirim_id', 'divisi_tujuan_id'], 'integer'],
-            [['nomor_surat', 'perihal', 'tanggal_surat', 'status'], 'safe'],
+            [['nomor_surat', 'perihal', 'tanggal_surat', 'status', 'nama_penerima'], 'safe'],
         ];
     }
 
@@ -22,6 +33,7 @@ class SuratEkspedisiSearch extends SuratEkspedisi
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -39,7 +51,8 @@ class SuratEkspedisiSearch extends SuratEkspedisi
 
         $query->andFilterWhere(['like', 'nomor_surat', $this->nomor_surat])
               ->andFilterWhere(['like', 'perihal', $this->perihal])
-              ->andFilterWhere(['like', 'status', $this->status]);
+              ->andFilterWhere(['like', 'status', $this->status])
+              ->andFilterWhere(['like', 'nama_penerima', $this->nama_penerima]);
 
         return $dataProvider;
     }

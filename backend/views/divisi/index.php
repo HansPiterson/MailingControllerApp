@@ -1,5 +1,4 @@
 <?php
-
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -8,55 +7,41 @@ $this->title = 'Manajemen Divisi';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="divisi-index">
-
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 text-gray-800"><?= Html::encode($this->title) ?></h1>
-        <?= Html::a('<i class="fas fa-plus fa-sm text-white-50"></i> Tambah Divisi', ['create'], ['class' => 'd-none d-sm-inline-block btn btn-sm btn-primary shadow-sm']) ?>
+        <h1 class="h3 mb-0"><?= Html::encode($this->title) ?></h1>
+        <?= Html::a('<hero-icon name="plus" class="w-5 h-5 me-1"></hero-icon> Tambah Divisi', ['create'], ['class' => 'btn btn-primary d-flex align-items-center shadow-sm']) ?>
     </div>
 
-    <?php Pjax::begin(); ?>
     <div class="card shadow mb-4">
-        <div class="card-body">
-            <div class="table-responsive">
-                <?= GridView::widget([
-                    'dataProvider' => $dataProvider,
-                    'filterModel' => $searchModel,
-                    'summary' => "Menampilkan {begin}-{end} dari {totalCount} data",
-                    'tableOptions' => ['class' => 'table table-bordered table-hover'],
-                    'headerRowOptions' => ['class' => 'text-primary'],
-                    'columns' => [
-                        ['class' => 'yii\grid\SerialColumn'],
-                        'nama',
-                        [
-                            'attribute' => 'created_at',
-                            'format' => 'datetime',
-                            'filter' => false, // Nonaktifkan filter untuk kolom ini
-                        ],
-                        [
-                            'class' => 'yii\grid\ActionColumn',
-                            'template' => '<div class="d-flex">{view} {update} {delete}</div>',
-                            'buttons' => [
-                                'view' => function ($url, $model, $key) {
-                                    return Html::a('<i class="fas fa-eye"></i>', $url, ['class' => 'btn btn-sm btn-info', 'title' => 'Lihat']);
-                                },
-                                'update' => function ($url, $model, $key) {
-                                    return Html::a('<i class="fas fa-pencil-alt"></i>', $url, ['class' => 'btn btn-sm btn-warning mx-1', 'title' => 'Ubah']);
-                                },
-                                'delete' => function ($url, $model, $key) {
-                                    return Html::a('<i class="fas fa-trash"></i>', $url, [
-                                        'class' => 'btn btn-sm btn-danger', 
-                                        'title' => 'Hapus',
-                                        'data-confirm' => "Apakah Anda yakin ingin menghapus divisi '{$model->nama}'?",
-                                        'data-method' => 'post',
-                                    ]);
-                                },
-                            ],
-                        ],
+        <div class="card-body p-0">
+            <?php Pjax::begin(); ?>
+            <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'filterModel' => $searchModel,
+                'tableOptions' => ['class' => 'table table-hover align-middle mb-0'],
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
+                    'kode_divisi',
+                    'nama_divisi',
+                    [
+                        'attribute' => 'is_active',
+                        'format' => 'raw',
+                        'value' => function($model) {
+                            return $model->is_active ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-danger">Non-Aktif</span>';
+                        }
                     ],
-                ]); ?>
-            </div>
+                    [
+                        'class' => 'yii\grid\ActionColumn',
+                        'template' => '{view} {update} {delete}',
+                        'buttons' => [
+                            'view' => function($url) { return Html::a('<hero-icon name="eye" class="w-5 h-5"></hero-icon>', $url, ['class' => 'text-info']); },
+                            'update' => function($url) { return Html::a('<hero-icon name="pencil-square" class="w-5 h-5"></hero-icon>', $url, ['class' => 'text-warning ms-2']); },
+                            'delete' => function($url) { return Html::a('<hero-icon name="trash" class="w-5 h-5"></hero-icon>', $url, ['class' => 'text-danger ms-2', 'data-method' => 'post', 'data-confirm' => 'Hapus divisi ini?']); },
+                        ]
+                    ],
+                ],
+            ]); ?>
+            <?php Pjax::end(); ?>
         </div>
     </div>
-    <?php Pjax::end(); ?>
-
 </div>

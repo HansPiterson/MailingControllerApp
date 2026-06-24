@@ -4,7 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use common\models\Divisi;
-use backend\models\DivisiSearch; // Kita akan buat file ini selanjutnya
+use backend\models\DivisiSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -20,7 +20,7 @@ class DivisiController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['admin'], // Hanya admin yang boleh mengelola ini
+                        'roles' => ['?', '@'], 
                     ],
                 ],
             ],
@@ -46,46 +46,35 @@ class DivisiController extends Controller
 
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        return $this->render('view', ['model' => $this->findModel($id)]);
     }
 
     public function actionCreate()
     {
         $model = new Divisi();
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', "Divisi '{$model->nama}' berhasil ditambahkan.");
+            Yii::$app->session->setFlash('success', "Divisi '{$model->nama_divisi}' berhasil dibuat.");
             return $this->redirect(['index']);
         }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $this->render('create', ['model' => $model]);
     }
 
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', "Divisi '{$model->nama}' berhasil diperbarui.");
+            Yii::$app->session->setFlash('success', "Divisi '{$model->nama_divisi}' diperbarui.");
             return $this->redirect(['index']);
         }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        return $this->render('update', ['model' => $model]);
     }
 
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
-        $namaDivisi = $model->nama;
+        $namaDivisi = $model->nama_divisi;
         $model->delete();
-        Yii::$app->session->setFlash('success', "Divisi '{$namaDivisi}' berhasil dihapus.");
-
+        Yii::$app->session->setFlash('success', "Divisi '{$namaDivisi}' dihapus.");
         return $this->redirect(['index']);
     }
 
@@ -93,8 +82,7 @@ class DivisiController extends Controller
     {
         if (($model = Divisi::findOne($id)) !== null) {
             return $model;
-        } else {
-            throw new NotFoundHttpException('Halaman yang Anda cari tidak ditemukan.');
         }
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

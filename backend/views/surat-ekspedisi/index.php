@@ -1,91 +1,90 @@
 <?php
-use common\models\SuratEkspedisi;
 use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use common\models\SuratEkspedisi;
 use common\models\Divisi;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
-/** @var yii\web\View $this */
-/** @var backend\models\SuratEkspedisiSearch $searchModel */
-/** @var yii\data\ActiveDataProvider $dataProvider */
-
-$this->title = 'Kelola Surat Ekspedisi';
+$this->title = 'Manajemen Surat Ekspedisi';
 $this->params['breadcrumbs'][] = $this->title;
 
-$statusBadges = [
-    SuratEkspedisi::STATUS_DRAFT => 'secondary',
-    SuratEkspedisi::STATUS_TERKIRIM => 'info',
-    SuratEkspedisi::STATUS_PERLU_DIULAS => 'warning',
-    SuratEkspedisi::STATUS_DITERIMA => 'success',
-    SuratEkspedisi::STATUS_BATAL => 'danger',
-];
-
+$divisiList = ArrayHelper::map(Divisi::find()->all(), 'id', 'nama_divisi');
 ?>
 <div class="surat-ekspedisi-index">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1><?= Html::encode($this->title) ?></h1>
-        <p>
-            <?= Html::a('<hero-icon name="plus" class="w-5 h-5 me-1"></hero-icon> Tambah Surat', ['create'], ['class' => 'btn btn-success d-flex align-items-center']) ?>
-        </p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0"><?= Html::encode($this->title) ?></h1>
+        <?php 
+            // Memastikan rute menggunakan 'surat-ekspedisi/create'
+            echo Html::a('<hero-icon name="plus" class="w-5 h-5 me-1"></hero-icon> Tambah Surat', ['/surat-ekspedisi/create'], ['class' => 'btn btn-primary d-flex align-items-center shadow-sm']); 
+        ?>
     </div>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'tableOptions' => ['class' => 'table table-hover'],
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-            'nomor_surat',
-            [
-                'attribute' => 'divisi_pengirim_id',
-                'value' => 'divisiPengirim.nama_divisi',
-                'filter' => ArrayHelper::map(Divisi::find()->asArray()->all(), 'id', 'nama_divisi'),
-            ],
-            [
-                'attribute' => 'divisi_tujuan_id',
-                'value' => 'divisiTujuan.nama_divisi',
-                'filter' => ArrayHelper::map(Divisi::find()->asArray()->all(), 'id', 'nama_divisi'),
-            ],
-            'tanggal_surat:date',
-            [
-                'attribute' => 'status',
-                'format' => 'raw',
-                'value' => function ($model) use ($statusBadges) {
-                    $badgeClass = $statusBadges[$model->status] ?? 'light';
-                    return "<span class=\"badge bg-{$badgeClass}\">" . Html::encode($model->status) . "</span>";
-                },
-                'filter' => $statusBadges,
-            ],
-            [
-                'class' => ActionColumn::className(),
-                'header' => 'Actions',
-                'template' => '{review} {view} {update} {delete}',
-                'buttons' => [
-                    'review' => function ($url, $model, $key) {
-                        if ($model->status === SuratEkspedisi::STATUS_PERLU_DIULAS) {
-                             return Html::a('<hero-icon name="magnifying-glass-circle" class="w-5 h-5"></hero-icon>', ['review', 'id' => $model->id], ['class' => 'text-warning', 'title' => 'Review']);
-                        }
-                        return '';
-                    },
-                    'view' => function ($url) {
-                        return Html::a('<hero-icon name="eye" class="w-5 h-5"></hero-icon>', $url, ['class' => 'text-primary ms-2', 'title' => 'View']);
-                    },
-                    'update' => function ($url) {
-                        return Html::a('<hero-icon name="pencil-square" class="w-5 h-5"></hero-icon>', $url, ['class' => 'text-warning ms-2', 'title' => 'Update']);
-                    },
-                    'delete' => function ($url) {
-                        return Html::a('<hero-icon name="trash" class="w-5 h-5"></hero-icon>', $url, [
-                            'class' => 'text-danger ms-2',
-                            'title' => 'Delete',
-                            'data-confirm' => 'Are you sure?',
-                            'data-method' => 'post',
-                        ]);
-                    },
+    <div class="card shadow mb-4">
+        <div class="card-body p-0">
+            <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'filterModel' => $searchModel,
+                'tableOptions' => ['class' => 'table table-hover align-middle mb-0'],
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
+                    'nomor_surat',
+                    [
+                        'attribute' => 'divisi_pengirim_id',
+                        'value' => 'divisiPengirim.nama_divisi',
+                        'filter' => $divisiList,
+                        'label' => 'Pengirim',
+                    ],
+                    [
+                        'attribute' => 'divisi_tujuan_id',
+                        'value' => 'divisiTujuan.nama_divisi',
+                        'filter' => $divisiList,
+                        'label' => 'Tujuan',
+                    ],
+                    'tanggal_surat:date',
+                    [
+                        'attribute' => 'status',
+                        'format' => 'raw',
+                        'value' => function ($model) {
+                            $class = 'secondary';
+                            if ($model->status === SuratEkspedisi::STATUS_DITERIMA) $class = 'success';
+                            if ($model->status === SuratEkspedisi::STATUS_PERLU_DIULAS) $class = 'warning';
+                            if ($model->status === SuratEkspedisi::STATUS_TERKIRIM) $class = 'info';
+                            return "<span class=\"badge bg-{$class}\">" . strtoupper($model->status) . "</span>";
+                        },
+                        'filter' => array_combine(SuratEkspedisi::statuses(), array_map('strtoupper', SuratEkspedisi::statuses())),
+                    ],
+                    [
+                        'class' => 'yii\grid\ActionColumn',
+                        'template' => '{review} {view} {update} {delete}',
+                        'buttons' => [
+                            'review' => function ($url, $model) {
+                                if ($model->status === SuratEkspedisi::STATUS_PERLU_DIULAS) {
+                                    return Html::a('<hero-icon name="clipboard-document-check" class="w-5 h-5"></hero-icon>', ['review', 'id' => $model->id], [
+                                        'class' => 'text-warning',
+                                        'title' => 'Review Bukti',
+                                    ]);
+                                }
+                                return '';
+                            },
+                            'view' => function ($url) {
+                                return Html::a('<hero-icon name="eye" class="w-5 h-5"></hero-icon>', $url, ['class' => 'text-info ms-2']);
+                            },
+                            'update' => function ($url) {
+                                return Html::a('<hero-icon name="pencil-square" class="w-5 h-5"></hero-icon>', $url, ['class' => 'text-warning ms-2']);
+                            },
+                            'delete' => function ($url) {
+                                return Html::a('<hero-icon name="trash" class="w-5 h-5"></hero-icon>', $url, [
+                                    'class' => 'text-danger ms-2',
+                                    'data-confirm' => 'Hapus data ini?',
+                                    'data-method' => 'post',
+                                ]);
+                            },
+                        ],
+                    ],
                 ],
-            ],
-        ],
-    ]); ?>
+            ]); ?>
+        </div>
+    </div>
 </div>

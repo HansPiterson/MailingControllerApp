@@ -8,11 +8,16 @@ use common\models\Divisi;
 
 class DivisiSearch extends Divisi
 {
-    public function rules()
+    public static function tableName(): string
+    {
+        return '{{%divisi}}';
+    }
+
+    public function rules(): array
     {
         return [
             [['id'], 'integer'],
-            [['nama', 'created_at', 'updated_at'], 'safe'],
+            [['kode_divisi', 'nama_divisi'], 'safe'],
         ];
     }
 
@@ -23,7 +28,6 @@ class DivisiSearch extends Divisi
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
-            'pagination' => ['pageSize' => 10]
         ]);
 
         $this->load($params);
@@ -36,7 +40,8 @@ class DivisiSearch extends Divisi
             'id' => $this->id,
         ]);
 
-        $query->andFilterWhere(['like', 'nama', $this->nama]);
+        $query->andFilterWhere(['like', 'kode_divisi', $this->kode_divisi])
+              ->andFilterWhere(['like', 'nama_divisi', $this->nama_divisi]);
 
         return $dataProvider;
     }

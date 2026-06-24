@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use Yii;
 use common\models\Divisi;
 use common\models\SuratEkspedisi;
 use common\models\User;
@@ -10,14 +11,8 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\data\ActiveDataProvider;
 
-/**
- * Site controller
- */
 class SiteController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
     public function behaviors()
     {
         return [
@@ -31,7 +26,9 @@ class SiteController extends Controller
                     [
                         'actions' => ['logout', 'index'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        // Kita tetap izinkan guest (?) sementara untuk review UI, 
+                        // tapi actionLogout akan memaksa pindah ke Login.
+                        'roles' => ['?', '@'], 
                     ],
                 ],
             ],
@@ -44,9 +41,6 @@ class SiteController extends Controller
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function actions()
     {
         return [
@@ -56,11 +50,6 @@ class SiteController extends Controller
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
     public function actionIndex()
     {
         $totalSurat = SuratEkspedisi::find()->count();
@@ -80,40 +69,27 @@ class SiteController extends Controller
         ]);
     }
 
-    /**
-     * Login action.
-     *
-     * @return string|yii\web\Response
-     */
     public function actionLogin()
     {
-        if (!\Yii::$app->user->isGuest) {
+        if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
         $this->layout = 'blank';
-
         $model = new \common\models\LoginForm();
-        if ($model->load(\Yii::$app->request->post()) && $model->login()) {
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            Yii::$app->session->setFlash('success', 'Selamat datang kembali!');
             return $this->goBack();
         }
 
         $model->password = '';
-
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+        return $this->render('login', ['model' => $model]);
     }
 
-    /**
-     * Logout action.
-     *
-     * @return yii\web\Response
-     */
     public function actionLogout()
     {
-        \Yii::$app->user->logout();
-
-        return $this->goHome();
+        Yii::$app->user->logout();
+        // Paksa redirect ke halaman login
+        return $this->redirect(['login']);
     }
 }

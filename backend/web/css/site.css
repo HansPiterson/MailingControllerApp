@@ -1,20 +1,92 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+:root {
+    --sidebar-width: 260px;
+    --primary-color: #3751FF;
+    --bg-dark: #363740;
+    --bg-light: #F7F8FC;
+}
+
 body {
     font-family: 'Inter', sans-serif;
-    padding-top: 4.5rem; 
+    background-color: var(--bg-light);
+    color: #252733;
+    overflow-x: hidden;
 }
 
-/* Mengubah variabel warna default Bootstrap untuk tema gelap */
-[data-bs-theme="dark"] body {
-    background-color: #212529;
+#wrapper {
+    display: flex;
+    width: 100%;
 }
 
-[data-bs-theme="dark"] .card {
-    background-color: #2b3035;
-    border-color: #444;
+/* Sidebar Styling */
+#sidebar {
+    width: var(--sidebar-width);
+    min-height: 100vh;
+    background-color: var(--bg-dark);
+    color: #A4A6B3;
+    transition: all 0.3s;
 }
 
-[data-bs-theme="dark"] .table-hover > tbody > tr:hover > * {
-  --bs-table-accent-bg: #32383e;
+#sidebar .sidebar-header {
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+#sidebar .nav-link {
+    color: #A4A6B3;
+    padding: 1.25rem 1.5rem;
+    border-left: 3px solid transparent;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+#sidebar .nav-link:hover, #sidebar .nav-link.active {
+    background-color: #3e4049;
+    color: #DDE2FF;
+    border-left-color: #DDE2FF;
+}
+
+#sidebar hero-icon {
+    margin-right: 1.5rem;
+    opacity: 0.7;
+}
+
+/* Content Styling */
+#content {
+    flex: 1;
+    padding: 2rem;
+    max-width: calc(100% - var(--sidebar-width));
+}
+
+.card {
+    border: 1px solid #DFE0EB;
+    border-radius: 8px;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 1.5rem;
+    transition: 0.3s;
+}
+
+.stat-card:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.stat-title {
+    color: #9FA2B4;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
 }

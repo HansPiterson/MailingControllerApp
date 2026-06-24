@@ -25,7 +25,7 @@ $items = [
     ],
     [
         'label' => 'Kelola Surat',
-        'url' => ['/surat-ekspedisi/index'],
+        'url' => ['/surat-ekspedisi/index'], // Memastikan rute 'surat-ekspedisi'
         'visible' => !Yii::$app->user->isGuest,
     ],
 ];

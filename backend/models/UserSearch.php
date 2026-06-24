@@ -8,7 +8,18 @@ use common\models\User;
 
 class UserSearch extends User
 {
-    public function rules()
+    /**
+     * Menegaskan penggunaan tabel yang sama dengan model induknya.
+     */
+    public static function tableName(): string
+    {
+        return '{{%users}}';
+    }
+
+    /**
+     * Sinkronisasi Type Hinting dengan model User.
+     */
+    public function rules(): array
     {
         return [
             [['id', 'status', 'created_at', 'updated_at', 'divisi_id'], 'integer'],
