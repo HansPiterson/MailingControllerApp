@@ -1,21 +1,17 @@
 <?php
-// ...
+namespace backend\controllers;
+
+use common\models\SuratEkspedisi;
+use backend\models\SuratEkspedisiSearch;
+use yii\web\Controller; // <-- Baris ini hilang
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use Yii;
+use yii\web\Response;
+
+
 class SuratEkspedisiController extends Controller
 {
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['admin'], // Hanya role 'admin' yang diizinkan
-                    ],
-                ],
-            ],
-            // ... (verbs)
-        ];
-    }
-    // ...
+    // ... (sisa kode controller)
 }

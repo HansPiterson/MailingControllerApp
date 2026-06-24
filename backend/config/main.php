@@ -13,11 +13,35 @@ return [
     'bootstrap' => ['log'],
     'modules' => [],
     'components' => [
-        // ... (request, user, log, etc)
+        'request' => [
+            'csrfParam' => '_csrf-backend',
+        ],
+        'user' => [
+            'identityClass' => 'common\models\User', // Baris ini yang hilang
+            'enableAutoLogin' => true,
+            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+        ],
+        'session' => [
+            'name' => 'advanced-backend',
+        ],
+        'log' => [
+            'traceLevel' => YII_DEBUG ? 3 : 0,
+            'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error', 'warning'],
+                ],
+            ],
+        ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        // Tambahkan komponen authManager di sini
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'rules' => [
+            ],
+        ],
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],

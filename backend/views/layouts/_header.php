@@ -29,39 +29,49 @@ $items = [
         'visible' => !Yii::$app->user->isGuest,
     ],
 ];
-
-if (Yii::$app->user->isGuest) {
-    $items[] = [
-        'label' => 'Login',
-        'url' => ['/site/login'],
-    ];
-} else {
-    $items[] = [
-        'label' => 'Logout (' . Html::encode(Yii::$app->user->identity?->username) . ')',
-        'url' => ['/site/logout'],
-        'linkOptions' => [
-            'data-method' => 'post',
-            'class' => 'logout',
-        ],
-    ];
-}
-
 ?>
 <header id="header">
     <?php NavBar::begin(
         [
             'brandLabel' => Yii::$app->name,
             'brandUrl' => Yii::$app->homeUrl,
-            // Mengubah kelas untuk tampilan yang lebih bersih
-            'options' => ['class' => 'navbar-expand-md navbar-light bg-white shadow-sm fixed-top']
+            'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark shadow-sm fixed-top']
         ],
     ) ?>
+    
     <?= Nav::widget(
         [
-            'options' => ['class' => 'navbar-nav me-auto'],
-            'encodeLabels' => false,
+            'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
             'items' => $items,
         ],
     ) ?>
+
+    <div class="d-flex align-items-center">
+         <?php if (!Yii::$app->user->isGuest): ?>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <hero-icon name="user-circle" class="w-5 h-5 me-1 d-inline-block align-middle"></hero-icon>
+                        <?= Html::encode(Yii::$app->user->identity->username) ?>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="navbarDropdown">
+                        <li>
+                            <?= Html::a('Logout', ['/site/logout'], [
+                                'class' => 'dropdown-item text-danger',
+                                'data' => ['method' => 'post'],
+                            ]) ?>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        <?php else: ?>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <?= Html::a('Login', ['/site/login'], ['class' => 'nav-link']) ?>
+                </li>
+            </ul>
+        <?php endif; ?>
+    </div>
+    
     <?php NavBar::end() ?>
 </header>

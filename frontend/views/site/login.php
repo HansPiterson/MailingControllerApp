@@ -1,40 +1,41 @@
 <?php
-
-/** @var yii\web\View $this */
-/** @var yii\bootstrap5\ActiveForm $form */
-/** @var \common\models\LoginForm $model */
-
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
-$this->title = 'Login';
-$this->params['breadcrumbs'][] = $this->title;
+/** @var yii\web\View $this */
+/** @var \common\models\LoginForm $model */
+
+$this->title = 'Portal Divisi Login';
+// Menggunakan layout 'blank' yang bersih
+$this->context->layout = 'blank'; 
 ?>
 <div class="site-login">
     <div class="row justify-content-center">
-        <div class="col-lg-5">
-            <div class="card shadow-sm">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header text-center">
+                    <h3 class="fw-light my-4"><?= Html::encode(Yii::$app->name) ?></h3>
+                </div>
                 <div class="card-body">
-                    <h1 class="card-title text-center"><?= Html::encode($this->title) ?></h1>
-                    <p class="card-text text-center text-muted">Login untuk melihat data surat divisi Anda</p>
-
+                    <p class="text-center text-muted">Login untuk melihat data surat divisi Anda</p>
                     <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
+                        <?= $form->field($model, 'username', [
+                            'inputTemplate' => '<div class="input-group">{input}<span class="input-group-text"><hero-icon name="user" class="w-5 h-5 text-muted"></hero-icon></span></div>',
+                        ])->textInput(['autofocus' => true, 'placeholder' => 'Username'])->label(false) ?>
 
-                    <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+                        <?= $form->field($model, 'password', [
+                             'inputTemplate' => '<div class="input-group">{input}<span class="input-group-text"><hero-icon name="lock-closed" class="w-5 h-5 text-muted"></hero-icon></span></div>',
+                        ])->passwordInput(['placeholder' => 'Password'])->label(false) ?>
 
-                    <?= $form->field($model, 'password')->passwordInput() ?>
+                        <?= $form->field($model, 'rememberMe')->checkbox() ?>
 
-                    <?= $form->field($model, 'rememberMe')->checkbox() ?>
-
-                    <div class="my-3 text-muted">
-                        Jika Anda lupa password, silakan hubungi administrator.
-                    </div>
-
-                    <div class="form-group">
-                        <?= Html::submitButton('Login', ['class' => 'btn btn-primary w-100', 'name' => 'login-button']) ?>
-                    </div>
-
+                        <div class="d-grid mt-4">
+                            <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+                        </div>
                     <?php ActiveForm::end(); ?>
+                </div>
+                 <div class="card-footer text-center py-3">
+                    <div class="small">Lupa password? Hubungi Administrator.</div>
                 </div>
             </div>
         </div>

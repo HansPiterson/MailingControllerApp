@@ -5,23 +5,25 @@ declare(strict_types=1);
 /** @var yii\web\View $this */
 /** @var string $content */
 
+use backend\assets\AppAsset;
 use yii\bootstrap5\Breadcrumbs;
 use yii\helpers\Html;
 
-$this->render('_head');
+AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>" class="h-100" data-bs-theme="light">
+<html lang="<?= Yii::$app->language ?>" class="h-100" data-bs-theme="dark">
 <head>
-    <?php $this->head() ?>
+    <meta charset="<?= Yii::$app->charset ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
-    <!-- Integrasi Heroicons -->
+    <?php $this->head() ?>
     <script type="module" src="https://cdn.jsdelivr.net/npm/heroicons@2.1.3/24/outline/index.js"></script>
-    <!-- Integrasi Toastify.js -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
-<body class="d-flex flex-column h-100 bg-light">
+<body class="d-flex flex-column h-100">
 <?php $this->beginBody() ?>
 
 <?= $this->render('_header') ?>
@@ -43,22 +45,10 @@ $this->render('_head');
 <?= $this->render('_footer') ?>
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-
 <?php
-// Tampilkan flash messages sebagai notifikasi toast
 foreach (Yii::$app->session->getAllFlashes() as $key => $message) {
-    $bgColor = ($key === 'error') ? '#dc3545' : '#198754'; // Merah untuk error, hijau untuk sukses/info
-    $js = "
-        Toastify({
-            text: `{$message}`,
-            duration: 3000,
-            close: true,
-            gravity: 'top',
-            position: 'right',
-            backgroundColor: '{$bgColor}',
-            stopOnFocus: true
-        }).showToast();
-    ";
+    $bgColor = ($key === 'error') ? '#dc3545' : '#198754';
+    $js = "Toastify({ text: `{$message}`, duration: 3000, close: true, gravity: 'top', position: 'right', backgroundColor: '{$bgColor}', stopOnFocus: true }).showToast();";
     $this->registerJs($js);
 }
 ?>

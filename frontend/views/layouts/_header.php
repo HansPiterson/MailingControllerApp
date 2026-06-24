@@ -7,73 +7,57 @@ declare(strict_types=1);
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 $items = [
-    [
-        'label' => 'Home',
-        'url' => ['/site/index'],
-    ],
-    // Tambahkan item menu baru di sini
-    [
-        'label' => 'Daftar Surat',
-        'url' => ['/surat/index'],
-        'visible' => !Yii::$app->user->isGuest, // Hanya tampil jika sudah login
-    ],
-    [
-        'label' => 'About',
-        'url' => ['/site/about'],
-    ],
-    [
-        'label' => 'Contact',
-        'url' => ['/site/contact'],
-    ],
-    [
-        'label' => 'Signup',
-        'url' => ['/site/signup'],
-        'visible' => Yii::$app->user->isGuest,
-    ],
-    [
-        'label' => 'Login',
-        'url' => ['/site/login'],
-        'visible' => Yii::$app->user->isGuest,
-    ],
+    ['label' => 'Home', 'url' => ['/site/index']],
+    ['label' => 'Daftar Surat', 'url' => ['/surat/index'], 'visible' => !Yii::$app->user->isGuest],
+    ['label' => 'About', 'url' => ['/site/about']],
+    ['label' => 'Contact', 'url' => ['/site/contact']],
 ];
-
-if (!Yii::$app->user->isGuest) {
-    $items[] = [
-        'label' => 'Logout (' . Html::encode(Yii::$app->user->identity?->username) . ')',
-        'url' => ['/site/logout'],
-        'linkOptions' => [
-            'data-method' => 'post',
-            'class' => 'logout',
-        ],
-    ];
-}
-
 ?>
 <header id="header">
     <?php NavBar::begin(
         [
             'brandLabel' => Yii::$app->name,
             'brandUrl' => Yii::$app->homeUrl,
-            'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
+            'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark shadow-sm fixed-top']
         ],
     ) ?>
-    <?= Nav::widget(
-        [
-            'options' => ['class' => 'navbar-nav me-auto'],
-            'encodeLabels' => false,
-            'items' => $items,
-        ],
-    ) ?>
-    <?= Html::button(
-        '&#127769;',
-        [
-            'id' => 'theme-toggle',
-            'class' => 'btn btn-link nav-link fs-5',
-            'aria-label' => 'Switch to dark mode',
-        ],
-    ) ?>
+
+    <?= Nav::widget([
+        'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
+        'items' => $items,
+    ]) ?>
+
+    <div class="d-flex align-items-center">
+        <?php if (!Yii::$app->user->isGuest): ?>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <hero-icon name="user-circle" class="w-5 h-5 me-1 d-inline-block align-middle"></hero-icon>
+                        <?= Html::encode(Yii::$app->user->identity->username) ?>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                        <li>
+                             <?= Html::a('Logout', ['/site/logout'], [
+                                'class' => 'dropdown-item text-danger',
+                                'data' => ['method' => 'post'],
+                            ]) ?>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        <?php else: ?>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <?= Html::a('Signup', ['/site/signup'], ['class' => 'nav-link']) ?>
+                </li>
+                <li class="nav-item">
+                    <?= Html::a('Login', ['/site/login'], ['class' => 'nav-link']) ?>
+                </li>
+            </ul>
+        <?php endif; ?>
+    </div>
+
     <?php NavBar::end() ?>
 </header>
